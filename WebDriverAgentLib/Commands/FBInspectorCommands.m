@@ -17,10 +17,10 @@
 {
   return @[
     [[FBRoute GET:@"/inspector"].withoutSession respondWithBlock: ^ id<FBResponsePayload> (FBRouteRequest *request) {
-      return FBResponseFileWithPath([[self class] inspectorHTMLFilePath]);
+      return FBResponseWithOK(); //([[self class] inspectorHTMLFilePath]);
     }],
     [[FBRoute GET:@"/inspector.js"].withoutSession respondWithBlock: ^ id<FBResponsePayload> (FBRouteRequest *request) {
-      return FBResponseFileWithPath([[self class] inspectorJSFilePath]);
+      return FBResponseWithOK(); //FBResponseFileWithPath([[self class] inspectorJSFilePath]);
     }],
   ];
 }

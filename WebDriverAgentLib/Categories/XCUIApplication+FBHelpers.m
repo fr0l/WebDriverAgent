@@ -77,6 +77,24 @@ const static NSTimeInterval FBMinimumAppSwitchWait = 3.0;
   NSMutableArray<NSDictionary<NSString *, id> *> *result = [NSMutableArray array];
   id<XCTestManager_ManagerInterface> proxy = [FBXCTestDaemonsProxy testRunnerProxy];
   for (XCAccessibilityElement *axElement in axElements) {
+
+    __block XCAccessibilityElement *result2 = nil;
+    __block NSError *innerError = nil;
+    dispatch_semaphore_t semq = dispatch_semaphore_create(0);
+
+    CGPoint point = CGPointMake(200, 200);
+    [proxy _XCT_requestElementAtPoint:point
+                                reply:^(XCAccessibilityElement *element, NSError *error) {
+                                  if (nil == error) {
+                                    result2 = element;
+                                  } else {
+                                    innerError = error;
+                                  }
+                                  dispatch_semaphore_signal(semq);
+                                }];
+
+    dispatch_semaphore_wait(semq, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)));
+
     NSMutableDictionary<NSString *, id> *appInfo = [NSMutableDictionary dictionary];
     pid_t pid = axElement.processIdentifier;
     appInfo[@"pid"] = @(pid);
