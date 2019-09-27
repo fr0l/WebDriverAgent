@@ -168,6 +168,11 @@ static BOOL FBIncludeNonModalElements = NO;
 
 + (NSUInteger)mjpegServerFramerate
 {
+  NSUInteger frameRate = self.mjpegServerFrameRateFromArguments;
+  if (frameRate != NSNotFound) {
+    return frameRate;
+  }
+
   return FBMjpegServerFramerate;
 }
 
@@ -347,6 +352,17 @@ static BOOL FBIncludeNonModalElements = NO;
     return NSNotFound;
   }
   return port;
+}
+
++ (NSUInteger)mjpegServerFrameRateFromArguments
+{
+  NSString *frameRateString = [self valueFromArguments: NSProcessInfo.processInfo.arguments
+                                                forKey: @"--mjpeg-server-frame-rate"];
+  NSUInteger frameRate = (NSUInteger)[frameRateString integerValue];
+  if (frameRate == 0) {
+    return NSNotFound;
+  }
+  return frameRate;
 }
 
 + (NSRange)bindingPortRangeFromArguments
